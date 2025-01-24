@@ -1,6 +1,7 @@
 import { db } from '$lib/server/db/index';
 import { notes } from '$lib/server/db/schema';
 import type { Note } from '$lib/types/note';
+import type { Actions } from './$types';
 import { eq, sql, desc, asc } from 'drizzle-orm';
 
 export async function load({ url }) {
@@ -54,4 +55,4 @@ export const actions = {
         }
         return { success: false, error: 'Invalid password' };
     },
-};
+} satisfies Actions;;

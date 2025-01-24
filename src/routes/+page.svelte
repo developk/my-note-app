@@ -14,13 +14,16 @@
         formData.append('id', note.id.toString());
         formData.append('isStarred', note.isStarred ? 'true' : 'false');
 
-        await fetch('/?sort=' + sort + '&order=' + order, {
+        await fetch('?/toggleStar', {
             method: 'POST',
             body: formData,
             headers: { Accept: 'application/json' },
         });
 
         note.isStarred = !note.isStarred;
+    
+        // 반응형 데이터 업데이트
+        data.noteList = [...data.noteList]
     }
 
     // 노트 선택
