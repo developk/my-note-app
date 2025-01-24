@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1737607982250,
+      "tag": "0000_init-notes",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1737613343740,
+      "tag": "0001_add-password-to-notes",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1737613343740,
+      "tag": "0002_seed_notes-data",
+      "breakpoints": true
+    }
+  ]
+}
