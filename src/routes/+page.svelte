@@ -14,7 +14,7 @@
 
         const formData = new FormData();
         formData.append('id', note.id.toString());
-        formData.append('isStarred', note.isStarred ? 'true' : 'false');
+        formData.append('isStarred', !note.isStarred ? 'true' : 'false');
 
         // 서버 요청: ?/toggleStar
         const response = await fetch('?/toggleStar', {

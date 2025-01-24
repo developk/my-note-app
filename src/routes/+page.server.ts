@@ -22,7 +22,11 @@ export async function load({ url }) {
     })
     .from(notes)
     .where(eq(notes.isDeleted, false))
-    .orderBy(order(notes.createdAt));
+    .orderBy(
+        order(notes.createdAt),
+        order(eq(notes.isStarred, true))
+    )
+    ;
 
     const noteList = result as Note[];
 
@@ -34,6 +38,8 @@ export const actions = {
         const data = await request.formData();
         const id = Number(data.get('id'));
         const isStarred = data.get('isStarred') === 'true'; // boolean으로 변환
+
+        // console.log('isStarred: %o', isStarred);
 
         // 별표 상태 업데이트 (boolean -> number로 변환)
         await db.update(notes).set({ isStarred: isStarred }).where(eq(notes.id, id));
