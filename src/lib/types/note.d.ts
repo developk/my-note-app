@@ -4,7 +4,7 @@ export interface Note {
     content: string;
     createdAt: string;
     updatedAt: string;
-    isStarred: number;
-    isLocked: number;
-    isDeleted: number;
+    isStarred: boolean;
+    isLocked: boolean;
+    isDeleted: boolean;
 }

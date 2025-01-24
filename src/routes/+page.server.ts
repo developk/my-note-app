@@ -21,10 +21,12 @@ export async function load({ url }) {
         isDeleted: notes.isDeleted,
     })
     .from(notes)
-    .where(eq(notes.isDeleted, 0))
+    .where(eq(notes.isDeleted, false))
     .orderBy(order(notes.createdAt));
 
-    return { noteList: result }; // 데이터를 클라이언트로 반환
+    const noteList = result as Note[];
+
+    return { noteList: noteList }; // 데이터를 클라이언트로 반환
 }
 
 export const actions = {
@@ -34,7 +36,7 @@ export const actions = {
         const isStarred = data.get('isStarred') === 'true'; // boolean으로 변환
 
         // 별표 상태 업데이트 (boolean -> number로 변환)
-        await db.update(notes).set({ isStarred: isStarred ? 0 : 1 }).where(eq(notes.id, id));
+        await db.update(notes).set({ isStarred: isStarred }).where(eq(notes.id, id));
         return { success: true };
     },
 
