@@ -1,22 +1,58 @@
 <script lang="ts">
-    let title = '';
-    let content = '';
+    import { onMount } from 'svelte';
+    import Quill from 'quill';
+    import TableUI from 'quill-table-ui'; // quill-table-ui 플러그인
+    import 'quill/dist/quill.snow.css'; // Quill 기본 테마
+    import 'quill-table-ui/dist/index.css'; // quill-table-ui 스타일
+    import DOMPurify from 'dompurify';
 
-    async function saveNote() {
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('content', content);
+    let editorContainer; // Quill 에디터 컨테이너 참조
+    let quill; // Quill 인스턴스
+    let content = ''; // 에디터 내용 저장
 
-        const response = await fetch('/new-note', {
-            method: 'POST',
-            body: formData,
-            headers: { Accept: 'application/json' },
+    onMount(() => {
+        // Quill에 TableUI 플러그인 등록
+        Quill.register('modules/tableUI', TableUI);
+
+        // Quill 에디터 초기화
+        quill = new Quill(editorContainer, {
+            theme: 'snow', // Quill의 기본 테마
+            modules: {
+                toolbar: [
+                    [{ header: [1, 2, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['link', 'image'],
+                    ['table'], // 테이블 버튼 추가
+                ],
+                tableUI: true, // quill-table-ui 활성화
+            },
         });
 
-        const result = await response.json();
-        if (result.success) {
+        // 에디터 내용 변경 이벤트
+        quill.on('text-change', () => {
+            content = quill.root.innerHTML; // 에디터 HTML 내용 저장
+        });
+    });
+
+    // 노트 저장
+    async function saveNote() {
+        console.log('Saving note:', content);
+
+        const formData = new FormData();
+
+        const saveContent = DOMPurify.sanitize(content);
+
+        formData.append('content', saveContent);
+
+        const response = await fetch('?/saveNote', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (response.ok) {
             alert('Note saved successfully!');
-            window.location.href = '/'; // 노트 목록 화면으로 이동
+            window.location.href = '/'; // 목록 화면으로 이동
         } else {
             alert('Failed to save the note.');
         }
@@ -25,47 +61,33 @@
 
 <h1 class="text-2xl font-bold mb-4">새 노트 작성</h1>
 
-<form on:submit|preventDefault={saveNote} class="flex flex-col space-y-4">
-    <!-- 제목 -->
-    <div>
-        <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
-        <input
-            id="title"
-            type="text"
-            bind:value={title}
-            class="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-            required
-        />
-    </div>
+<!-- Quill 에디터 영역 -->
+<div class="border rounded p-4">
+    <div bind:this={editorContainer} class="editor-container"></div>
+</div>
 
-    <!-- 내용 -->
-    <div>
-        <label for="content" class="block text-sm font-medium text-gray-700">Content</label>
-        <textarea
-            id="content"
-            bind:value={content}
-            class="block w-full mt-1 border-gray-300 rounded-md shadow-sm"
-            required
-        ></textarea>
-    </div>
+<!-- 저장 버튼 -->
+<button
+    on:click={saveNote}
+    class="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+>
+    Save Note
+</button>
 
-    <!-- 버튼 영역 -->
-    <div class="flex justify-between">
-        <!-- 목록 버튼 -->
-        <a
-            href="/"
-            class="bg-gray-300 text-black px-4 py-2 rounded hover:bg-gray-400"
-            aria-label="Go back to note list"
-        >
-            List
-        </a>
-
-        <!-- 저장 버튼 -->
-        <button
-            type="submit"
-            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-            Save Note
-        </button>
-    </div>
-</form>
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    .editor-container {
+        height: 400px; /* 에디터 높이 */
+    }
+</style>

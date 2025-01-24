@@ -62,83 +62,86 @@
     }
 </script>
 
-<h1 class="text-2xl font-bold mb-4">내 노트</h1>
+<div class="p-2">
 
-<!-- 정렬 옵션 -->
-<div class="flex justify-between items-center mb-4">
-    <div class="flex gap-4">
-        <div>
-            <label class="font-medium" for="sortOptions">Sort by:</label>
-            <select bind:value={sort} class="border rounded px-2 py-1" id="sortOptions">
-                <option value="title">Title</option>
-                <option value="createdAt">Created Date</option>
-            </select>
-        </div>
-        <div>
-            <label class="font-medium" for="orderDirection">Order:</label>
-            <select bind:value={order} class="border rounded px-2 py-1" id="orderDirection">
-                <option value="asc">Ascending</option>
-                <option value="desc">Descending</option>
-            </select>
-        </div>
-    </div>
-    <a
-        href="/new-note"
-        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        aria-label="Add a new note"
-    >
-        + New Note
-    </a>
-</div>
+    <h1 class="text-2xl font-bold mb-4">내 노트</h1>
 
-<!-- 노트 목록 -->
-{#if data.noteList.length === 0}
-    <p>No notes available.</p>
-{:else}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {#each data.noteList as note}
-            <div
-                role="button"
-                tabindex="0"
-                class="border rounded shadow-md p-4 relative hover:shadow-lg cursor-pointer"
-                on:click={() => selectNote(note)}
-                on:keydown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') selectNote(note);
-                }}
-            >
-                <!-- 별표와 잠금 상태 -->
-                <div class="absolute top-2 right-2 flex gap-2">
-                    <button
-                        type="button"
-                        on:click={(e) => {
-                            e.stopPropagation();
-                            toggleStar(note);
-                        }}
-                        class="text-yellow-500 hover:text-yellow-600"
-                        aria-label={note.isStarred ? 'Unstar this note' : 'Star this note'}
-                    >
-                        {note.isStarred ? '⭐' : '☆'}
-                    </button>
-                    {#if note.isLocked}
-                        <span class="text-red-500" aria-label="Locked note">🔒</span>
-                    {/if}
-                </div>
-
-                <!-- 노트 내용 -->
-                <h2 class="font-bold text-lg mb-2 truncate">{note.title}</h2>
-                <p class="text-gray-600 text-sm truncate">{note.content}</p>
-                <p class="text-gray-400 text-xs mt-2">
-                    {new Date(note.createdAt).toLocaleDateString()}
-                </p>
+    <!-- 정렬 옵션 -->
+    <div class="flex justify-between items-center mb-4">
+        <div class="flex gap-4">
+            <div>
+                <label class="font-medium" for="sortOptions">Sort by:</label>
+                <select bind:value={sort} class="border rounded px-2 py-1" id="sortOptions">
+                    <option value="title">Title</option>
+                    <option value="createdAt">Created Date</option>
+                </select>
             </div>
-        {/each}
+            <div>
+                <label class="font-medium" for="orderDirection">Order:</label>
+                <select bind:value={order} class="border rounded px-2 py-1" id="orderDirection">
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+            </div>
+        </div>
+        <a
+            href="/new-note"
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            aria-label="Add a new note"
+        >
+            + New Note
+        </a>
     </div>
-{/if}
-
-<!-- 노트 미리보기 -->
-{#if selectedNote}
-    <div class="mt-4 p-4 border rounded shadow-md">
-        <h2 class="text-xl font-bold">{selectedNote.title}</h2>
-        <p>{selectedNote.content}</p>
-    </div>
-{/if}
+    
+    <!-- 노트 목록 -->
+    {#if data.noteList.length === 0}
+        <p>No notes available.</p>
+    {:else}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {#each data.noteList as note}
+                <div
+                    role="button"
+                    tabindex="0"
+                    class="border rounded shadow-md p-4 relative hover:shadow-lg cursor-pointer"
+                    on:click={() => selectNote(note)}
+                    on:keydown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') selectNote(note);
+                    }}
+                >
+                    <!-- 별표와 잠금 상태 -->
+                    <div class="absolute top-2 right-2 flex gap-2">
+                        <button
+                            type="button"
+                            on:click={(e) => {
+                                e.stopPropagation();
+                                toggleStar(note);
+                            }}
+                            class="text-yellow-500 hover:text-yellow-600"
+                            aria-label={note.isStarred ? 'Unstar this note' : 'Star this note'}
+                        >
+                            {note.isStarred ? '⭐' : '☆'}
+                        </button>
+                        {#if note.isLocked}
+                            <span class="text-red-500" aria-label="Locked note">🔒</span>
+                        {/if}
+                    </div>
+    
+                    <!-- 노트 내용 -->
+                    <h2 class="font-bold text-lg mb-2 truncate">{note.title}</h2>
+                    <p class="text-gray-600 text-sm truncate">{note.content}</p>
+                    <p class="text-gray-400 text-xs mt-2">
+                        {new Date(note.createdAt).toLocaleDateString()}
+                    </p>
+                </div>
+            {/each}
+        </div>
+    {/if}
+    
+    <!-- 노트 미리보기 -->
+    {#if selectedNote}
+        <div class="mt-4 p-4 border rounded shadow-md">
+            <h2 class="text-xl font-bold">{selectedNote.title}</h2>
+            <p>{selectedNote.content}</p>
+        </div>
+    {/if}
+</div>

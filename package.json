@@ -48,7 +48,10 @@
 	},
 	"dependencies": {
 		"@libsql/client": "^0.14.0",
+		"dompurify": "^3.2.3",
 		"dotenv": "^16.4.7",
-		"drizzle-orm": "^0.38.4"
+		"drizzle-orm": "^0.38.4",
+		"quill": "^2.0.3",
+		"quill-table-ui": "^1.0.7"
 	}
 }
